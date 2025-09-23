@@ -1,0 +1,47 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+main {
+  display: flex;
+  height: 100vh; /* full screen */
+}
+#header{
+ font-size: 47px;
+ text-align: center;
+}
+
+/* Left pane */
+#left-pane {
+  width: 60%;
+  padding: 1rem;
+  overflow-y: auto;
+  border-right: 1px solid #ccc;
+}
+
+/* Right pane */
+#right-pane {
+  width: 40%;
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Book cards */
+.book-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 10px 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.book-card img {
+  width: 60px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 4px;
+}
