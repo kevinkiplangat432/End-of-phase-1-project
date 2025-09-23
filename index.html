@@ -14,7 +14,17 @@
         <div id="left-pane">
             <div id="search-div">
                 <label id="search-label">search</label>
-                <input type="search"  id="search">
+                <input type="search"  id="search"><br>
+                   <!-- Filter by language -->
+                <label for="filter-select">Filter:</label>
+                <select id="filter-select">
+                <option value="all">All Languages</option>
+                <option value="en">English</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="es">Spanish</option>
+                </select>
+
             </div>
             <div id="display-data">
                 
@@ -22,6 +32,7 @@
             <div id="pagination-controls">
                 <button class=" nav-buttons" id="prev-btn" disabled>Previous</button>
                 <button class=" nav-buttons" id="next-btn" disabled>Next</button>
+
 
             </div>
         </div>   

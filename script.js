@@ -118,5 +118,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (prevUrl) fetchBooks(prevUrl);
   });
 });
+//book filtering by language
+let booksData = [];      // raw results from API (current page)
+let filteredBooks = [];  // results after filter/sort
 
+function filterBooksByLanguage(language) {
+  // Assume booksData is your last fetched list of books
+  let filtered = [...booksData];  
+
+  if (language !== "all") {
+    filtered = filtered.filter(book => 
+      book.languages && book.languages.includes(language)
+    );
+  }
+
+  displayBookDetails(filtered); // call your display/render function
+}
+const filterSelect = document.getElementById("filter-select");
+filterSelect.addEventListener("change", () => {
+  filterBooksByLanguage(filterSelect.value);
+});
 
