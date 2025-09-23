@@ -2,7 +2,18 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("The DOM has loaded");
   fetchDataFromServer();
+  
+  document.getElementById("next-btn").addEventListener("click", () => {
+    if (nextUrl) fetchBooks(nextUrl);
+  });
+
+  document.getElementById("prev-btn").addEventListener("click", () => {
+    if (prevUrl) fetchBooks(prevUrl);
+  });
 });
+
+
+
 // Global state for pagination
 let nextUrl = null;
 let prevUrl = null;
@@ -30,21 +41,20 @@ function fetchDataFromServer() {
 
 function fetchBooks(url) {
   fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      booksData = data.results; // store raw results for filtering
-      filteredBooks = [...booksData]; // reset filtered results
-      displayFetchedData(filteredBooks); // display all books initially
+    .then(res => res.json())
+    .then(data => {
+      booksData = data.results;
+
+      // Instead of dumping raw, reapply current filter + sort
+      filterBooksByLanguage(document.getElementById("filter-select").value);
 
       // Save pagination links
       nextUrl = data.next;
       prevUrl = data.previous;
-
-      // Enable/disable buttons
       document.getElementById("next-btn").disabled = !nextUrl;
       document.getElementById("prev-btn").disabled = !prevUrl;
     })
-    .catch((err) => console.error("Error fetching books:", err));
+    .catch(err => console.error("Error fetching books:", err));
 }
 
 // Render books safely
@@ -111,15 +121,7 @@ function displayBookDetails(book) {
   rightPane.appendChild(link);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("next-btn").addEventListener("click", () => {
-    if (nextUrl) fetchBooks(nextUrl);
-  });
 
-  document.getElementById("prev-btn").addEventListener("click", () => {
-    if (prevUrl) fetchBooks(prevUrl);
-  });
-});
 //book filtering by language
 let booksData = [];      // raw results from API (current page)
 let filteredBooks = [];  // results after filter/sort
@@ -133,11 +135,33 @@ function filterBooksByLanguage(language) {
       book.languages && book.languages.includes(language)
     );
   }
-
-  displayFetchedData(filtered); // call your display/render function
+  filteredBooks = applySorting(filtered); // apply current sorting
+  displayFetchedData(filteredBooks); // call your display/render function
 }
 const filterSelect = document.getElementById("filter-select");
 filterSelect.addEventListener("change", () => {
   filterBooksByLanguage(filterSelect.value);
 });
 
+function applySorting(books) {
+  const sortValue = document.getElementById("sort-select").value;
+  let sorted = [...books];
+
+  if (sortValue === "title-asc") {
+    sorted.sort((a, b) => a.title.localeCompare(b.title));
+  } else if (sortValue === "title-desc") {
+    sorted.sort((a, b) => b.title.localeCompare(a.title));
+  } else if (sortValue === "author-asc") {
+    sorted.sort((a, b) => {
+      const authorA = a.authors.length ? a.authors[0].name : "";
+      const authorB = b.authors.length ? b.authors[0].name : "";
+      return authorA.localeCompare(authorB);
+    });
+  }
+  return sorted;
+}
+const sortSelect = document.getElementById("sort-select");
+sortSelect.addEventListener("change", () => {
+  // Reapply filter with new sorting
+  filterBooksByLanguage(document.getElementById("filter-select").value);
+});
