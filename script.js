@@ -3,31 +3,56 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("The DOM has loaded");
   fetchDataFromServer();
 });
+// Global state for pagination
+let nextUrl = null;
+let prevUrl = null;
 
 
 // fetch books when a user searches for a book
 function fetchDataFromServer() {
   const searchInput = document.getElementById("search");
-
+  let searchTimeout;
   // Search event listener
-  searchInput.addEventListener("input", (e) => {
-    const searchQuery = e.target.value.trim(); // removes the white spaces in  the users input.
-    fetch(`https://gutendex.com/books/?search=${searchQuery}`)
-      .then((res) => res.json())
-      .then((data) => displayFetchedData(data.results));
-  });
+    searchInput.addEventListener("input", (e) => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+  const searchQuery = e.target.value.trim();
+  const searchUrl = searchQuery
+    ? `https://gutendex.com/books/?search=${searchQuery}`
+    : "https://gutendex.com/books/";
+  fetchBooks(searchUrl);
+  }, 300); // Debounce time of 300ms
+});
 
   // fetch all the books in the  server.
-  fetch("https://gutendex.com/books/")
+  fetchBooks("https://gutendex.com/books/")
+}
+
+function fetchBooks(url) {
+  fetch(url)
     .then((res) => res.json())
-    .then((data) => displayFetchedData(data.results));
+    .then((data) => {
+      displayFetchedData(data.results);
+
+      // Save pagination links
+      nextUrl = data.next;
+      prevUrl = data.previous;
+
+      // Enable/disable buttons
+      document.getElementById("next-btn").disabled = !nextUrl;
+      document.getElementById("prev-btn").disabled = !prevUrl;
+    })
+    .catch((err) => console.error("Error fetching books:", err));
 }
 
 // Render books safely
 function displayFetchedData(books) {
   const cardDisplay= document.getElementById("display-data");
   cardDisplay.innerHTML = ""; // clear old results
-
+  if (!books.length) {
+  cardDisplay.innerHTML = "<p id='error-search-message'> Sorry no books found.</p>";
+  return;
+}
   books.forEach((book) => {
     // creates the inner html for the data.
     const card = document.createElement("div");
@@ -53,6 +78,8 @@ function displayFetchedData(books) {
     cardDisplay.appendChild(card);
     
   });
+
+
 }
 
 function displayBookDetails(book) {
@@ -81,4 +108,15 @@ function displayBookDetails(book) {
   link.textContent = "Read Book";
   rightPane.appendChild(link);
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("next-btn").addEventListener("click", () => {
+    if (nextUrl) fetchBooks(nextUrl);
+  });
+
+  document.getElementById("prev-btn").addEventListener("click", () => {
+    if (prevUrl) fetchBooks(prevUrl);
+  });
+});
+
 

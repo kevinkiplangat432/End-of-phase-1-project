@@ -31,6 +31,11 @@ main {
   padding: 1rem;
   overflow-y: auto;
 }
+#display-data {
+  margin-top: 10px;
+  max-height : 80vh;
+  overflow-y: auto;
+}
 
 /* Book cards */
 .book-card {
@@ -67,16 +72,17 @@ main {
   border-radius: 8px;
   margin-bottom: 10px;
 }
-.nav-button {
+.nav-buttons {
   padding: 8px 12px;
   margin: 5px;
-  border: none;
+  border: solid 1px #ccc;
   border-radius: 4px;
-  background-color:greenyellow;
+  background-color:rgb(65, 80, 44);
   color: white;
   cursor: pointer;
 }
-.nav-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+#error-search-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
 }
