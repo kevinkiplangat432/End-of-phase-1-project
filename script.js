@@ -32,7 +32,9 @@ function fetchBooks(url) {
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
-      displayFetchedData(data.results);
+      booksData = data.results; // store raw results for filtering
+      filteredBooks = [...booksData]; // reset filtered results
+      displayFetchedData(filteredBooks); // display all books initially
 
       // Save pagination links
       nextUrl = data.next;
@@ -132,7 +134,7 @@ function filterBooksByLanguage(language) {
     );
   }
 
-  displayBookDetails(filtered); // call your display/render function
+  displayFetchedData(filtered); // call your display/render function
 }
 const filterSelect = document.getElementById("filter-select");
 filterSelect.addEventListener("change", () => {
