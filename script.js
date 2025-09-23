@@ -61,26 +61,24 @@ function displayBookDetails(book) {
 
   const title = document.createElement("h2");
   title.textContent = book.title;
-
+  title.style.fontSize = "24px";
+  title.style.fontWeight = "bold";
+  rightPane.appendChild(title);
   const author = document.createElement("p");
   author.textContent = book.authors.map(a => a.name).join(", ") || "Unknown";
-
+    rightPane.appendChild(author);
   const img = document.createElement("img");
   img.src = book.formats["image/jpeg"] || "";
   img.alt = book.title;
-
+  img.classList.add("book-detail-image");
+  rightPane.appendChild(img);
   const lang = document.createElement("p");
   lang.textContent = `Language: ${book.languages.join(", ")}`;
-
+  rightPane.appendChild(lang);
   const link = document.createElement("a");
   link.href = book.formats["text/html"] || "#";
   link.target = "_blank";
   link.textContent = "Read Book";
-
-  rightPane.appendChild(img);
-  rightPane.appendChild(title);
-  rightPane.appendChild(author);
-  rightPane.appendChild(lang);
   rightPane.appendChild(link);
 }
 
