@@ -2,42 +2,61 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("The DOM has loaded");
   fetchDataFromServer();
-  
+  // pagination button event listeners
   document.getElementById("next-btn").addEventListener("click", () => {
-    if (nextUrl) fetchBooks(nextUrl);
+    if (nextUrl) fetchBooks(nextUrl);// fetch next page
   });
 
   document.getElementById("prev-btn").addEventListener("click", () => {
-    if (prevUrl) fetchBooks(prevUrl);
+    if (prevUrl) fetchBooks(prevUrl);// fetch previous page
   });
+  document.getElementById("dark-mode-btn").addEventListener("click", () => {
+  document.body.classList.toggle("dark");
 });
 
-
-
-// Global state for pagination
+});
 let nextUrl = null;
 let prevUrl = null;
-
 
 // fetch books when a user searches for a book
 function fetchDataFromServer() {
   const searchInput = document.getElementById("search");
-  let searchTimeout;
+  let searchTimeout; // for debouncing
   // Search event listener
     searchInput.addEventListener("input", (e) => {
-  clearTimeout(searchTimeout);
+  clearTimeout(searchTimeout); //removes any previously set timeout
+  //applying the debounce
   searchTimeout = setTimeout(() => {
-  const searchQuery = e.target.value.trim();
-  const searchUrl = searchQuery
-    ? `https://gutendex.com/books/?search=${searchQuery}`
-    : "https://gutendex.com/books/";
+  const searchQuery = e.target.value.trim(); // clean up input
+  // construct search URL
+let searchUrl;
+if (searchQuery) {
+  searchUrl = `https://gutendex.com/books/?search=${searchQuery}`;
+  updatePagination(data.next, data.previous);
+
+} else {
+  searchUrl = "https://gutendex.com/books/";
+  
+}
+// fetch books based on search
   fetchBooks(searchUrl);
   }, 300); // Debounce time of 300ms
 });
 
   // fetch all the books in the  server.
-  fetchBooks("https://gutendex.com/books/")
+  fetchBooks("https://gutendex.com/books/") // initial fetch
 }
+showLoader();
+fetch(url)
+  .then(res => res.json())
+  .then(data => {
+    hideLoader();
+    // your render code...
+  })
+  .catch(err => {
+    hideLoader();
+    console.error(err);
+  });
 
 function fetchBooks(url) {
   fetch(url)
@@ -45,12 +64,11 @@ function fetchBooks(url) {
     .then(data => {
       booksData = data.results;
 
-      // Instead of dumping raw, reapply current filter + sort
       filterBooksByLanguage(document.getElementById("filter-select").value);
-
       // Save pagination links
       nextUrl = data.next;
       prevUrl = data.previous;
+      // Enable/disable buttons based on availability
       document.getElementById("next-btn").disabled = !nextUrl;
       document.getElementById("prev-btn").disabled = !prevUrl;
     })
@@ -61,10 +79,11 @@ function fetchBooks(url) {
 function displayFetchedData(books) {
   const cardDisplay= document.getElementById("display-data");
   cardDisplay.innerHTML = ""; // clear old results
-  if (!books.length) {
+
+  if (books.length === 0) {
   cardDisplay.innerHTML = "<p id='error-search-message'> Sorry no books found.</p>";
   return;
-}
+  }
   books.forEach((book) => {
     // creates the inner html for the data.
     const card = document.createElement("div");
@@ -78,6 +97,7 @@ function displayFetchedData(books) {
     title.textContent = book.title;
 
     const author = document.createElement("p");
+    // iterate through authors array to get names
     author.textContent = book.authors.map((a) => a.name).join(", ") || "Unknown";
 
     const img = document.createElement("img");
@@ -88,12 +108,9 @@ function displayFetchedData(books) {
     card.appendChild(title);
     card.appendChild(author);
     cardDisplay.appendChild(card);
-    
   });
-
-
 }
-
+// display book details in the right pane
 function displayBookDetails(book) {
   const rightPane = document.getElementById("right-pane");
   rightPane.innerHTML = ""; // clear old details
@@ -121,7 +138,6 @@ function displayBookDetails(book) {
   rightPane.appendChild(link);
 }
 
-
 //book filtering by language
 let booksData = [];      // raw results from API (current page)
 let filteredBooks = [];  // results after filter/sort
@@ -131,6 +147,7 @@ function filterBooksByLanguage(language) {
   let filtered = [...booksData];  
 
   if (language !== "all") {
+    //loops through the books and filters them by language
     filtered = filtered.filter(book => 
       book.languages && book.languages.includes(language)
     );
@@ -138,15 +155,16 @@ function filterBooksByLanguage(language) {
   filteredBooks = applySorting(filtered); // apply current sorting
   displayFetchedData(filteredBooks); // call your display/render function
 }
+//handle filter change event
 const filterSelect = document.getElementById("filter-select");
 filterSelect.addEventListener("change", () => {
   filterBooksByLanguage(filterSelect.value);
 });
-
+// sorting function
 function applySorting(books) {
   const sortValue = document.getElementById("sort-select").value;
   let sorted = [...books];
-
+// sorting logic
   if (sortValue === "title-asc") {
     sorted.sort((a, b) => a.title.localeCompare(b.title));
   } else if (sortValue === "title-desc") {

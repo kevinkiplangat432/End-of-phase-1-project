@@ -9,12 +9,19 @@
 <body>
     <header id="header"> 
         <h1>Readify</h1>
+                <!-- Dark Mode Toggle -->
+        <button id="dark-mode-btn" class="dark-toggle">
+         Dark Mode
+        </button>
+
     </header>
     <main>
         <div id="left-pane">
             <div id="search-div">
-                <label id="search-label">search</label>
-                <input type="search"  id="search"><br>
+                <div id="search-container"> 
+                <label id="search-label">Search</label>
+                <input type="search"  id="search" placeholder="e.g The Great Gatsby"><br>
+                </div>
                    <!-- Filter by language -->
                 <label for="filter-select">Filter:</label>
                 <select id="filter-select">
@@ -48,6 +55,8 @@
         <div id="right-pane">
 
         </div> 
+        <div id="loader" class="loader hidden"></div>
+
         
     </main>
     <script src="script.js"></script>
