@@ -43,7 +43,7 @@ Git
 
 Clone the repository
 
-git clone https://github.com/your-username/readify.git
+git clone https://github.com/kevinkiplangat432/End-of-phase-1-project`
 cd readify
 
 
@@ -238,7 +238,7 @@ Click the Fork button at the top right of this page to create your own copy.
 
 Clone your fork
 
-git clone https://github.com/<your-username>/readify.git
+git clone https://github.com/kevinkiplangat432/End-of-phase-1-project
 cd readify
 
 
