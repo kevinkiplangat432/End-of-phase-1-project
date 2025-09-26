@@ -13,8 +13,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("dark-mode-btn").addEventListener("click", () => {
   document.body.classList.toggle("dark");
 });
-
 });
+function showLoader() {
+  document.getElementById("loader").classList.remove("hidden");
+}
+function hideLoader() {
+  document.getElementById("loader").classList.add("hidden");
+}
+function updatePagination(next, previous) {
+  const nextBtn = document.getElementById("next-btn");
+  const prevBtn = document.getElementById("prev-btn");
+
+  nextBtn.disabled = !next;
+  prevBtn.disabled = !previous;
+}
 let nextUrl = null;
 let prevUrl = null;
 
@@ -32,11 +44,10 @@ function fetchDataFromServer() {
 let searchUrl;
 if (searchQuery) {
   searchUrl = `https://gutendex.com/books/?search=${searchQuery}`;
-  updatePagination(data.next, data.previous);
 
 } else {
   searchUrl = "https://gutendex.com/books/";
-  
+
 }
 // fetch books based on search
   fetchBooks(searchUrl);
@@ -45,34 +56,26 @@ if (searchQuery) {
 
   // fetch all the books in the  server.
   fetchBooks("https://gutendex.com/books/") // initial fetch
+
 }
-showLoader();
-fetch(url)
-  .then(res => res.json())
-  .then(data => {
-    hideLoader();
-    // your render code...
-  })
-  .catch(err => {
-    hideLoader();
-    console.error(err);
-  });
 
 function fetchBooks(url) {
+  showLoader();
   fetch(url)
     .then(res => res.json())
     .then(data => {
+      hideLoader();
       booksData = data.results;
 
       filterBooksByLanguage(document.getElementById("filter-select").value);
       // Save pagination links
       nextUrl = data.next;
       prevUrl = data.previous;
-      // Enable/disable buttons based on availability
-      document.getElementById("next-btn").disabled = !nextUrl;
-      document.getElementById("prev-btn").disabled = !prevUrl;
+      updatePagination(nextUrl, prevUrl);
     })
-    .catch(err => console.error("Error fetching books:", err));
+    .catch(err => {
+      hideLoader();
+      console.error("Error fetching books:", err)});
 }
 
 // Render books safely
@@ -84,6 +87,11 @@ function displayFetchedData(books) {
   cardDisplay.innerHTML = "<p id='error-search-message'> Sorry no books found.</p>";
   return;
   }
+  if (!books || !books.length) {
+  cardDisplay.innerHTML = "<p class='empty-message'>Sorry no books found. Try another search.</p>";
+  return;
+}
+
   books.forEach((book) => {
     // creates the inner html for the data.
     const card = document.createElement("div");
