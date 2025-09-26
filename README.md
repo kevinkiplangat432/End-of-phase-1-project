@@ -3,7 +3,7 @@ Readify is a web application that lets you search, explore, and read free books 
 . It is lightweight, fast, and provides a distraction-free reading experience.A place where literature lovers can access 76000+ books.
 
 ## live demo
-visit here for a live demo 
+visit here for a live demo https://kevinkiplangat432.github.io/End-of-phase-1-project/
 
 ## Problem Definition
 Accessing free books online can often be challenging because most platforms either require complex downloads, redirect readers to external websites with distracting layouts, or lack modern features like filtering and dark mode. Readers need a simple, user-friendly solution that allows them to search, explore, and read books directly in the browser without unnecessary friction. Readify addresses this problem by providing a clean interface powered by the Gutendex API, offering search, filtering, sorting, and a distraction-free Read Mode all in one place.
@@ -75,7 +75,7 @@ Save and wait a few minutes for deployment
 
 Your site will be live at:
 
-https://<your-username>.github.io/readify/
+https://kevinkiplangat432.github.io/End-of-phase-1-project/
 
 ### Netlify (alternative)
 
