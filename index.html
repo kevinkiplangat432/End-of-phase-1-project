@@ -1,64 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Readify</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Readify</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <header id="header"> 
-        <h1>Readify</h1>
-                <!-- Dark Mode Toggle -->
-        <button id="dark-mode-btn" class="dark-toggle">
-         Dark Mode
-        </button>
+  <header id="header">
+    <h1>Readify</h1>
+    <!-- Dark Mode Toggle -->
+    <button id="dark-mode-btn" class="dark-toggle">Dark Mode</button>
+  </header>
 
-    </header>
-    <main>
-        <div id="left-pane">
-            <div id="search-div">
-                <div id="search-container"> 
-                <label id="search-label">Search</label>
-                <input type="search"  id="search" placeholder="e.g The Great Gatsby"><br>
-                </div>
-                   <!-- Filter by language -->
-                <label for="filter-select">Filter:</label>
-                <select id="filter-select">
-                <option value="all">All Languages</option>
-                <option value="en">English</option>
-                <option value="fr">French</option>
-                <option value="de">German</option>
-                <option value="es">Spanish</option>
-                </select>
-                <!-- Sort options -->
-                <label for="sort-select">Sort:</label>
-                <select id="sort-select">
-                <option value="none">None</option>
-                <option value="title-asc">Title (A–Z)</option>
-                <option value="title-desc">Title (Z–A)</option>
-                <option value="author-asc">Author (A–Z)</option>
-                </select>
+  <main>
+    <!-- LEFT PANE -->
+    <div id="left-pane">
+      <div id="search-div">
+        <div id="search-container">
+          <label id="search-label">Search</label>
+          <input type="search" id="search" placeholder="e.g The Great Gatsby" /><br />
+        </div>
 
+        <!-- Filter by language -->
+        <label for="filter-select">Filter:</label>
+        <select id="filter-select">
+          <option value="all">All Languages</option>
+          <option value="en">English</option>
+          <option value="fr">French</option>
+          <option value="de">German</option>
+          <option value="es">Spanish</option>
+        </select>
 
-            </div>
-            <div id="display-data">
-                
-            </div>
-            <div id="pagination-controls">
-                <button class=" nav-buttons" id="prev-btn" disabled>Previous</button>
-                <button class=" nav-buttons" id="next-btn" disabled>Next</button>
+        <!-- Sort options -->
+        <label for="sort-select">Sort:</label>
+        <select id="sort-select">
+          <option value="none">None</option>
+          <option value="title-asc">Title (A–Z)</option>
+          <option value="title-desc">Title (Z–A)</option>
+          <option value="author-asc">Author (A–Z)</option>
+        </select>
+      </div>
 
+      <!-- Book cards -->
+      <div id="display-data"></div>
 
-            </div>
-        </div>   
-        <div id="right-pane">
+      <!-- Pagination -->
+      <div id="pagination-controls">
+        <button class="nav-buttons" id="prev-btn" disabled>Previous</button>
+        <button class="nav-buttons" id="next-btn" disabled>Next</button>
+      </div>
+    </div>
 
-        </div> 
-        <div id="loader" class="loader hidden"></div>
+    <!-- RIGHT PANE (book details) -->
+    <div id="right-pane"></div>
+  </main>
 
-        
-    </main>
-    <script src="script.js"></script>
+  <!-- Loader -->
+  <div id="loader" class="loader hidden"></div>
+
+  <!-- ✅ Read Mode Modal -->
+  <div id="read-mode" class="read-mode hidden">
+    <button id="close-read-mode">✖ Close</button>
+    <div class="read-mode-content">
+      <h1 id="read-title"></h1>
+      <h2 id="read-author"></h2>
+      <p id="read-subjects"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

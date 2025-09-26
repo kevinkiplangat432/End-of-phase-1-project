@@ -128,22 +128,34 @@ function displayBookDetails(book) {
   title.style.fontSize = "24px";
   title.style.fontWeight = "bold";
   rightPane.appendChild(title);
+
   const author = document.createElement("p");
   author.textContent = book.authors.map(a => a.name).join(", ") || "Unknown";
     rightPane.appendChild(author);
+
   const img = document.createElement("img");
   img.src = book.formats["image/jpeg"] || "";
   img.alt = book.title;
   img.classList.add("book-detail-image");
   rightPane.appendChild(img);
+
   const lang = document.createElement("p");
   lang.textContent = `Language: ${book.languages.join(", ")}`;
   rightPane.appendChild(lang);
+
   const link = document.createElement("a");
   link.href = book.formats["text/html"] || "#";
   link.target = "_blank";
   link.textContent = "Read Book";
   rightPane.appendChild(link);
+
+   // Read Mode Button
+const readModeBtn = document.createElement("button");
+readModeBtn.textContent = "Read Mode";
+readModeBtn.classList.add("read-mode-btn");
+readModeBtn.addEventListener("click", () => openReadMode(book));
+rightPane.appendChild(readModeBtn);
+
 }
 
 //book filtering by language
@@ -191,3 +203,46 @@ sortSelect.addEventListener("change", () => {
   // Reapply filter with new sorting
   filterBooksByLanguage(document.getElementById("filter-select").value);
 });
+
+function openReadMode(book) {
+  const readMode = document.getElementById("read-mode");
+  const content = document.querySelector(".read-mode-content");
+
+  // Reset before loading
+  content.innerHTML = "<p>Loading book...</p>";
+  readMode.classList.remove("hidden");
+
+  // Prefer plain text first, then fallback
+  let bookUrl = book.formats["text/plain; charset=utf-8"] 
+             || book.formats["text/plain"] 
+             || book.formats["text/html"];
+
+  if (!bookUrl) {
+    content.innerHTML = "<p>Sorry, this book is not available in Read Mode.</p>";
+    return;
+  }
+
+  fetch(bookUrl)
+    .then(res => res.text())
+    .then(data => {
+      if (bookUrl.includes("text/plain")) {
+        // Clean reader view for plain text
+        content.innerHTML = `
+          <h1>${book.title}</h1>
+          <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
+          <pre class="book-text">${data}</pre>
+        `;
+      } else {
+        // If HTML only, sandbox in iframe
+        content.innerHTML = `
+          <h1>${book.title}</h1>
+          <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
+          <iframe src="${bookUrl}" class="book-frame"></iframe>
+        `;
+      }
+    })
+    .catch(err => {
+      content.innerHTML = "<p>⚠ Error loading book in Read Mode.</p>";
+      console.error("Read Mode error:", err);
+    });
+}
