@@ -203,7 +203,7 @@ sortSelect.addEventListener("change", () => {
   // Reapply filter with new sorting
   filterBooksByLanguage(document.getElementById("filter-select").value);
 });
-
+// Read Mode Implementation
 function openReadMode(book) {
   const readMode = document.getElementById("read-mode");
   const content = document.querySelector(".read-mode-content");
@@ -212,13 +212,15 @@ function openReadMode(book) {
   content.innerHTML = "<p>Loading book...</p>";
   readMode.classList.remove("hidden");
 
-  // Prefer plain text first, then fallback
-  let bookUrl = book.formats["text/plain; charset=utf-8"] 
-             || book.formats["text/plain"] 
-             || book.formats["text/html"];
+  // Prefer plain text → fallback to HTML
+  let bookUrl =
+    book.formats["text/plain; charset=utf-8"] ||
+    book.formats["text/plain; charset=us-ascii"] ||
+    book.formats["text/plain"] ||
+    book.formats["text/html"];
 
   if (!bookUrl) {
-    content.innerHTML = "<p>Sorry, this book is not available in Read Mode.</p>";
+    content.innerHTML = "<p> Sorry, this book is not available in Read Mode.</p>";
     return;
   }
 
@@ -226,14 +228,14 @@ function openReadMode(book) {
     .then(res => res.text())
     .then(data => {
       if (bookUrl.includes("text/plain")) {
-        // Clean reader view for plain text
+        // Clean reader view
         content.innerHTML = `
           <h1>${book.title}</h1>
           <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
           <pre class="book-text">${data}</pre>
         `;
       } else {
-        // If HTML only, sandbox in iframe
+        // Sandbox HTML version
         content.innerHTML = `
           <h1>${book.title}</h1>
           <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
