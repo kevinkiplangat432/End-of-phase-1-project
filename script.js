@@ -14,12 +14,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.toggle("dark");
 });
 });
+// Loader functions
 function showLoader() {
   document.getElementById("loader").classList.remove("hidden");
 }
 function hideLoader() {
   document.getElementById("loader").classList.add("hidden");
 }
+// Update pagination buttons state
 function updatePagination(next, previous) {
   const nextBtn = document.getElementById("next-btn");
   const prevBtn = document.getElementById("prev-btn");
