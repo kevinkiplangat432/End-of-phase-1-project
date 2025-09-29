@@ -80,84 +80,74 @@ function fetchBooks(url) {
       console.error("Error fetching books:", err)});
 }
 
-// Render books safely
-function displayFetchedData(books) {
-  const cardDisplay= document.getElementById("display-data");
-  cardDisplay.innerHTML = ""; // clear old results
+// display fetched data in the left pane
+// display fetched data in the grid
+function displayFetchedData(booksArray) {
+  const displayDataDiv = document.getElementById("display-data");
+  displayDataDiv.innerHTML = "";
 
-  if (books.length === 0) {
-  cardDisplay.innerHTML = "<p id='error-search-message'> Sorry no books found.</p>";
-  return;
-  }
-  if (!books || !books.length) {
-  cardDisplay.innerHTML = "<p class='empty-message'>Sorry no books found. Try another search.</p>";
-  return;
-}
+  booksArray.forEach(book => {
+    const bookCard = document.createElement("div");
+    bookCard.classList.add("book-card");
 
-  books.forEach((book) => {
-    // creates the inner html for the data.
-    const card = document.createElement("div");
-    // for displaying data when i click on a card.
-    card.classList.add("book-card");
-    card.addEventListener("click", () => {
-      displayBookDetails(book) 
-    })
+    // Cover
+    const coverImage = document.createElement("img");
+    coverImage.src = book.formats["image/jpeg"] || "placeholder.jpg";
+    coverImage.alt = book.title;
 
-    const title = document.createElement("h2");
+    // Title
+    const title = document.createElement("h3");
     title.textContent = book.title;
 
+    // Author
     const author = document.createElement("p");
-    // iterate through authors array to get names
-    author.textContent = book.authors.map((a) => a.name).join(", ") || "Unknown";
+    author.textContent = book.authors.length
+      ? book.authors.map(a => a.name).join(", ")
+      : "Unknown Author";
 
-    const img = document.createElement("img");
-    img.src = book.formats["image/jpeg"] || "";
-    img.alt = book.title;
+    // View Button
+    const viewBtn = document.createElement("button");
+    viewBtn.textContent = "View Book";
+    viewBtn.classList.add("view-btn");
+    viewBtn.addEventListener("click", () => {
+      openDetailsModal(book);
+    });
 
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(author);
-    cardDisplay.appendChild(card);
+    // Build card
+    bookCard.appendChild(coverImage);
+    bookCard.appendChild(title);
+    bookCard.appendChild(author);
+    bookCard.appendChild(viewBtn);
+
+    displayDataDiv.appendChild(bookCard);
   });
 }
-// display book details in the right pane
-function displayBookDetails(book) {
-  const rightPane = document.getElementById("right-pane");
-  rightPane.innerHTML = ""; // clear old details
 
-  const title = document.createElement("h2");
-  title.textContent = book.title;
-  title.style.fontSize = "24px";
-  title.style.fontWeight = "bold";
-  rightPane.appendChild(title);
+function openDetailsModal(book) {
+  const modal = document.getElementById("book-modal");
+  const modalBody = document.getElementById("modal-body");
+  const closeBtn = modal.querySelector(".close-btn");
 
-  const author = document.createElement("p");
-  author.textContent = book.authors.map(a => a.name).join(", ") || "Unknown";
-    rightPane.appendChild(author);
+  // Fill modal content
+  modalBody.innerHTML = `
+    <h2>${book.title}</h2>
+    <p><strong>Author:</strong> ${book.authors.map(a => a.name).join(", ") || "Unknown"}</p>
+    <img src="${book.formats["image/jpeg"] || "placeholder.jpg"}" alt="${book.title}" style="max-width:200px; margin:1rem 0;">
+    <p><strong>Language:</strong> ${book.languages.join(", ")}</p>
+    <p><strong>Subjects:</strong> ${(book.subjects || []).slice(0,5).join(", ") || "N/A"}</p>
+    <a href="${book.formats["text/html"] || "#"}" target="_blank" class="read-link">Read Online</a>
+    <button class="read-mode-btn">Read Mode</button>
+  `;
 
-  const img = document.createElement("img");
-  img.src = book.formats["image/jpeg"] || "";
-  img.alt = book.title;
-  img.classList.add("book-detail-image");
-  rightPane.appendChild(img);
+  // Show modal
+  modal.classList.remove("hidden");
 
-  const lang = document.createElement("p");
-  lang.textContent = `Language: ${book.languages.join(", ")}`;
-  rightPane.appendChild(lang);
+  // Close events
+  closeBtn.onclick = () => modal.classList.add("hidden");
+  window.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
 
-  const link = document.createElement("a");
-  link.href = book.formats["text/html"] || "#";
-  link.target = "_blank";
-  link.textContent = "Read Book";
-  rightPane.appendChild(link);
-
-   // Read Mode Button
-const readModeBtn = document.createElement("button");
-readModeBtn.textContent = "Read Mode";
-readModeBtn.classList.add("read-mode-btn");
-readModeBtn.addEventListener("click", () => openReadMode(book));
-rightPane.appendChild(readModeBtn);
-
+  // Hook read mode button
+  modal.querySelector(".read-mode-btn").addEventListener("click", () => openReadMode(book));
 }
 
 //book filtering by language
