@@ -136,7 +136,6 @@ function openDetailsModal(book) {
     <p><strong>Language:</strong> ${book.languages.join(", ")}</p>
     <p><strong>Subjects:</strong> ${(book.subjects || []).slice(0,5).join(", ") || "N/A"}</p>
     <a href="${book.formats["text/html"] || "#"}" target="_blank" class="read-link">Read Online</a>
-    <button class="read-mode-btn">Read Mode</button>
   `;
 
   // Show modal
