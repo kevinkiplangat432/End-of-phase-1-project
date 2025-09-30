@@ -1,0 +1,214 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, sans-serif;
+}
+
+/* Body */
+body {
+  background: var(--bg-color, #f9f9f9);
+  color: var(--text-color, #222);
+  transition: background 0.3s, color 0.3s;
+  min-height: 100vh;
+}
+
+/* Dark Mode Vars */
+body.dark {
+  --bg-color: #121212;
+  --text-color: #f0f0f0;
+}
+
+/* NAV (from earlier snippet) */
+#nav-pane {
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #000);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 0.75rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+#nav-pane ul {
+  list-style: none;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+}
+#nav-pane a {
+  text-decoration: none;
+  font-weight: 500;
+  color: inherit;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+#nav-pane a:hover,
+#nav-pane a.active {
+  color: #0077ff;
+  border-bottom: 2px solid #0077ff;
+}
+body.dark #nav-pane {
+  background: #1e1e1e;
+}
+
+/* Controls */
+header.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem;
+}
+header.controls input,
+header.controls select,
+header.controls button {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+body.dark header.controls input,
+body.dark header.controls select,
+body.dark header.controls button {
+  background: #1e1e1e;
+  border: 1px solid #444;
+  color: #f0f0f0;
+}
+
+/* Loader */
+#loader {
+  text-align: center;
+  padding: 1rem;
+}
+.hidden { display: none; }
+
+/* Book Grid */
+#display-data {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+}
+.book-card {
+  background: var(--bg-color, #fff);
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.book-card img {
+  max-width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+.book-card h3 {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+.book-card p {
+  font-size: 0.9rem;
+  color: #666;
+}
+body.dark .book-card {
+  background: #1e1e1e;
+  color: #f0f0f0;
+}
+
+/* Buttons */
+.view-btn {
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #0077ff;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.view-btn:hover { background: #005bcc; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem;
+}
+.pagination button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #0077ff;
+  color: white;
+  cursor: pointer;
+}
+.pagination button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* Modal */
+#book-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+#book-modal.hidden { display: none; }
+.modal-content {
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #000);
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+#close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* Read Mode */
+#read-mode {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-color, #fff);
+  color: var(--text-color, #000);
+  padding: 2rem;
+  overflow-y: auto;
+  z-index: 300;
+}
+#read-mode.hidden { display: none; }
+.read-mode-content {
+  max-width: 800px;
+  margin: auto;
+}
+#close-read-mode {
+  display: block;
+  margin: 2rem auto 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #0077ff;
+  color: white;
+  cursor: pointer;
+}

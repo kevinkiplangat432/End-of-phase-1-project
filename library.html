@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library | Book Explorer</title>
+  <link rel="stylesheet" href="library.css" />
+</head>
+<body>
+  <!-- NAV BAR -->
+  <nav id="nav-pane">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="library.html" class="active">Library</a></li>
+      <li><a href="favourites.html">Favourites</a></li>
+      <li><a href="help.html">Help</a></li>
+    </ul>
+  </nav>
+
+  <!-- HEADER / CONTROLS -->
+  <header class="controls">
+    <input type="text" id="search" placeholder="Search books..." />
+    
+    <select id="filter-select">
+      <option value="all">All Languages</option>
+      <option value="en">English</option>
+      <option value="fr">French</option>
+      <option value="de">German</option>
+      <option value="es">Spanish</option>
+    </select>
+
+    <select id="sort-select">
+      <option value="title-asc">Title A → Z</option>
+      <option value="title-desc">Title Z → A</option>
+      <option value="author-asc">Author A → Z</option>
+    </select>
+
+    <button id="dark-mode-btn">Dark Mode</button>
+  </header>
+
+  <!-- LOADER -->
+  <div id="loader" class="hidden">Loading...</div>
+
+  <!-- BOOK GRID -->
+  <main id="display-data"></main>
+
+  <!-- PAGINATION -->
+  <div class="pagination">
+    <button id="prev-btn">⬅ Prev</button>
+    <button id="next-btn">Next ➡</button>
+  </div>
+
+  <!-- MODAL -->
+  <div id="book-modal" class="hidden">
+    <div class="modal-content" id="modal-body">
+      <!-- dynamic book details go here -->
+      <button id="close-modal">✖</button>
+    </div>
+  </div>
+
+  <!-- READ MODE -->
+  <div id="read-mode" class="hidden">
+    <div class="read-mode-content"></div>
+    <button id="close-read-mode">Close</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
