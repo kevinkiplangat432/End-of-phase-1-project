@@ -246,6 +246,7 @@ body.dark .book-card {
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s ease;
+  margin: 20px;
 }
 .library-btn:hover{  background: #005ecc;}
 

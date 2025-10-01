@@ -14,13 +14,20 @@ document.addEventListener("DOMContentLoaded", () => {
   document.body.classList.toggle("dark");
 });
 });
+
+
 // Loader functions
 function showLoader() {
   document.getElementById("loader").classList.remove("hidden");
 }
+
+
 function hideLoader() {
   document.getElementById("loader").classList.add("hidden");
 }
+
+
+
 // Update pagination buttons state
 function updatePagination(next, previous) {
   const nextBtn = document.getElementById("next-btn");
@@ -31,6 +38,12 @@ function updatePagination(next, previous) {
 }
 let nextUrl = null;
 let prevUrl = null;
+//book filtering by language
+let booksData = [];      // raw results from API (current page)
+let filteredBooks = [];  // results after filter/sort
+
+
+
 
 // fetch books when a user searches for a book
 function fetchDataFromServer() {
@@ -80,8 +93,10 @@ function fetchBooks(url) {
       console.error("Error fetching books:", err)});
 }
 
-// display fetched data in the left pane
-// display fetched data in the grid
+
+
+
+
 function displayFetchedData(booksArray) {
   const displayDataDiv = document.getElementById("display-data");
   displayDataDiv.innerHTML = "";
@@ -105,12 +120,7 @@ function displayFetchedData(booksArray) {
       ? book.authors.map(a => a.name).join(", ")
       : "Unknown Author";
 
-    const library = document.createElement ("button")
-    library.textContent = "Add to library"
-    library.classList.add ("library-btn")
-    library.addEventListener("click", ()=> {
-      addToLibrary(book.Id)
-    })
+  
 
     // View Button
     const viewBtn = document.createElement("button");
@@ -124,42 +134,88 @@ function displayFetchedData(booksArray) {
     bookCard.appendChild(coverImage);
     bookCard.appendChild(title);
     bookCard.appendChild(author);
-    bookCard.appendChild(library)
     bookCard.appendChild(viewBtn);
   
     displayDataDiv.appendChild(bookCard);
   });
 }
 
+
+
+
 function openDetailsModal(book) {
   const modal = document.getElementById("book-modal");
   const modalBody = document.getElementById("modal-body");
-  const closeBtn = modal.querySelector(".close-btn");
+  modalBody.innerHTML = ""; // clear old content
 
-  // Fill modal content
-  modalBody.innerHTML = `
-    <h2>${book.title}</h2>
-    <p><strong>Author:</strong> ${book.authors.map(a => a.name).join(", ") || "Unknown"}</p>
-    <img src="${book.formats["image/jpeg"] || "placeholder.jpg"}" alt="${book.title}" style="max-width:200px; margin:1rem 0;">
-    <p><strong>Language:</strong> ${book.languages.join(", ")}</p>
-    <p><strong>Subjects:</strong> ${(book.subjects || []).slice(0,5).join(", ") || "N/A"}</p>
-    <a href="${book.formats["text/html"] || "#"}" target="_blank" class="read-link">Read Online</a>
-  `;
+  // Title
+  const titleEl = document.createElement("h2");
+  titleEl.textContent = book.title;
+
+  // Author
+  const authorEl = document.createElement("p");
+  authorEl.innerHTML = `<strong>Author:</strong> ${
+    book.authors.length ? book.authors.map(a => a.name).join(", ") : "Unknown"
+  }`;
+
+  // Cover Image
+  const coverImg = document.createElement("img");
+  coverImg.src = book.formats["image/jpeg"] || "placeholder.jpg";
+  coverImg.alt = book.title;
+  coverImg.style.maxWidth = "200px";
+  coverImg.style.margin = "1rem 0";
+
+  // Language
+  const langEl = document.createElement("p");
+  langEl.innerHTML = `<strong>Language:</strong> ${book.languages.join(", ")}`;
+
+  // Subjects
+  const subjectsEl = document.createElement("p");
+  const subjectsText = (book.subjects || []).slice(0, 5).join(", ") || "N/A";
+  subjectsEl.innerHTML = `<strong>Subjects:</strong> ${subjectsText}`;
+
+  // Read Online Link
+  const readLink = document.createElement("a");
+  readLink.href = book.formats["text/html"] || "#";
+  readLink.target = "_blank";
+  readLink.classList.add("read-link");
+  readLink.textContent = "Read Online";
+
+  // Close button (your ✖)
+  const closeBtn = document.createElement("button");
+  closeBtn.textContent = "X";
+  closeBtn.classList.add("close-btn");
+  closeBtn.addEventListener("click", () => modal.classList.add("hidden"));
+
+    const library = document.createElement ("button")
+    library.textContent = "Add to library"
+    library.classList.add ("library-btn")
+    library.addEventListener("click", ()=> {
+      addToLibrary(book.id)
+    })
+
+  // Append everything
+  modalBody.appendChild(titleEl);
+  modalBody.appendChild(authorEl);
+  modalBody.appendChild(coverImg);
+  modalBody.appendChild(langEl);
+  modalBody.appendChild(subjectsEl);
+  modalBody.appendChild(readLink);
+  modalBody.appendChild(closeBtn);
+  modalBody.appendChild(library)
 
   // Show modal
   modal.classList.remove("hidden");
 
-  // Close events
-  closeBtn.onclick = () => modal.classList.add("hidden");
-  window.onclick = (e) => { if (e.target === modal) modal.classList.add("hidden"); };
-
-  // Hook read mode button
-  modal.querySelector(".read-mode-btn").addEventListener("click", () => openReadMode(book));
+  // Close modal when clicking outside
+  window.onclick = (e) => {
+    if (e.target === modal) modal.classList.add("hidden");
+  };
 }
 
-//book filtering by language
-let booksData = [];      // raw results from API (current page)
-let filteredBooks = [];  // results after filter/sort
+
+
+
 
 function filterBooksByLanguage(language) {
   // Assume booksData is your last fetched list of books
@@ -202,51 +258,11 @@ sortSelect.addEventListener("change", () => {
   // Reapply filter with new sorting
   filterBooksByLanguage(document.getElementById("filter-select").value);
 });
-// Read Mode Implementation
-function openReadMode(book) {
-  const readMode = document.getElementById("read-mode");
-  const content = document.querySelector(".read-mode-content");
 
-  // Reset before loading
-  content.innerHTML = "<p>Loading book...</p>";
-  readMode.classList.remove("hidden");
 
-  // Prefer plain text → fallback to HTML
-  let bookUrl =
-    book.formats["text/plain; charset=utf-8"] ||
-    book.formats["text/plain; charset=us-ascii"] ||
-    book.formats["text/plain"] ||
-    book.formats["text/html"];
 
-  if (!bookUrl) {
-    content.innerHTML = "<p> Sorry, this book is not available in Read Mode.</p>";
-    return;
-  }
 
-  fetch(bookUrl)
-    .then(res => res.text())
-    .then(data => {
-      if (bookUrl.includes("text/plain")) {
-        // Clean reader view
-        content.innerHTML = `
-          <h1>${book.title}</h1>
-          <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
-          <pre class="book-text">${data}</pre>
-        `;
-      } else {
-        // Sandbox HTML version
-        content.innerHTML = `
-          <h1>${book.title}</h1>
-          <h2>${book.authors.map(a => a.name).join(", ") || "Unknown Author"}</h2>
-          <iframe src="${bookUrl}" class="book-frame"></iframe>
-        `;
-      }
-    })
-    .catch(err => {
-      content.innerHTML = "<p>⚠ Error loading book in Read Mode.</p>";
-      console.error("Read Mode error:", err);
-    });
-}
+
 
 function addToLibrary(bookId) {
   // Get current library from localStorage
