@@ -105,6 +105,13 @@ function displayFetchedData(booksArray) {
       ? book.authors.map(a => a.name).join(", ")
       : "Unknown Author";
 
+    const library = document.createElement ("button")
+    library.textContent = "Add to library"
+    library.classList.add ("library-btn")
+    library.addEventListener("click", ()=> {
+      addToLibrary(book.Id)
+    })
+
     // View Button
     const viewBtn = document.createElement("button");
     viewBtn.textContent = "View Book";
@@ -117,8 +124,9 @@ function displayFetchedData(booksArray) {
     bookCard.appendChild(coverImage);
     bookCard.appendChild(title);
     bookCard.appendChild(author);
+    bookCard.appendChild(library)
     bookCard.appendChild(viewBtn);
-
+  
     displayDataDiv.appendChild(bookCard);
   });
 }
@@ -238,4 +246,21 @@ function openReadMode(book) {
       content.innerHTML = "<p>⚠ Error loading book in Read Mode.</p>";
       console.error("Read Mode error:", err);
     });
+}
+
+function addToLibrary(bookId) {
+  // Get current library from localStorage
+  let library = JSON.parse(localStorage.getItem("library")) || [];
+
+  // Find the book in your current data
+  const book = booksData.find(b => b.id === bookId);
+
+  // Check if already exists
+  if (!library.some(b => b.id === bookId)) {
+    library.push(book);
+    localStorage.setItem("library", JSON.stringify(library));
+    alert(`${book.title} has been added to your Library!`);
+  } else {
+    alert(`${book.title} is already in your Library.`);
+  }
 }

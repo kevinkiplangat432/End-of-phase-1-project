@@ -225,6 +225,7 @@ body.dark .book-card {
 }
 
 .view-btn {
+  margin: 6px;
   background:green;
   color: #fff;
   border: none;
@@ -237,7 +238,16 @@ body.dark .book-card {
 .view-btn:hover {
   background: #005ecc;
 }
-
+.library-btn{
+  background:green;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+.library-btn:hover{  background: #005ecc;}
 
 .book-detail-image {
   max-width: 200px;
